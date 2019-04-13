@@ -2,7 +2,7 @@ try{
 	node{
     stage('Git Checkout'){
 		git credentialsId: 'github', 
-		    url: 'https://github.com/javahometech/my-app',
+		    url: 'https://github.com/francis0516/my-app',
 			branch: "${params.gitBranch}"
 	}
 	
@@ -12,9 +12,9 @@ try{
 	stage('Deploy to Dev'){
 		sh 'mv target/*.war target/myweb.war'
 		sshagent(['tomcat-dev']) {
-			sh 'ssh ec2-user@172.31.17.196 rm -rf /opt/tomcat8/webapps/myweb*'
-		    sh 'scp target/myweb.war ec2-user@172.31.17.196:/opt/tomcat8/webapps/'
-		    sh 'ssh ec2-user@172.31.17.196 sudo service tomcat restart'
+			sh 'ssh root@192.168.1.13 rm -rf /opt/apache-tomcat-9.0.17/webapps/myweb*'
+		    sh 'scp target/myweb.war root@192.168.1.13:/opt/apache-tomcat-9.0.17/webapps/webapps/'
+		    sh 'ssh root@192.168.1.13 sudo service tomcat restart'
 		}
 	    slackSend channel: '#devops-2',
 				  color: 'good',
