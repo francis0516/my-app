@@ -2,7 +2,7 @@
 
 node{
   stage('Git Checkout'){
-      git url: 'https://github.com/javahometech/my-app',
+      git url: 'https://github.com/francis0516/my-app',
           branch:'master'
   }
   stage('MVN Package'){
@@ -10,19 +10,19 @@ node{
     sh "${mvnHome}/bin/mvn clean package"
   }
   stage('Build Docker Image'){
-    sh 'docker build -t kammana/my-app:0.0.1 .'
+    sh 'docker build -t henoge16/my-app:0.0.1 .'
   }
 
   stage('Upload Image to DockerHub'){
     withCredentials([string(credentialsId: 'docker-hub', variable: 'password')]) {
-      sh "docker login -u kammana -p ${password}"
+      sh "docker login -u henoge16 -p ${password}"
     }
-    sh 'docker push kammana/my-app:0.0.1'
+    sh 'docker push henoge16/my-app:0.0.1'
   }
   stage('Remove Old Containers'){
     sshagent(['my-app-dev']) {
       try{
-        def sshCmd = 'ssh -o StrictHostKeyChecking=no ec2-user@172.31.18.198'
+        def sshCmd = 'ssh -o StrictHostKeyChecking=no root@192.168.1.13'
         def dockerRM = 'docker rm -f my-app'
         sh "${sshCmd} ${dockerRM}"
       }catch(error){
@@ -33,8 +33,8 @@ node{
   stage('Deploy-Dev'){
     sshagent(['my-app-dev']) {
       input 'Deploy  to Dev?'
-      def sshCmd = 'ssh -o StrictHostKeyChecking=no ec2-user@172.31.18.198'
-      def dockerRun = 'docker run -d -p 8080:8080 --name my-app kammana/my-app:0.0.1'
+      def sshCmd = 'ssh -o StrictHostKeyChecking=no root@192.168.1.13'
+      def dockerRun = 'docker run -d -p 8080:8080 --name my-app henoge16/my-app:0.0.1'
       sh "${sshCmd} ${dockerRun}"
     }
   }
