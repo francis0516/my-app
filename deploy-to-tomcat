@@ -1,13 +1,13 @@
 node{
-   def tomcatIp = '172.31.14.131'
-   def tomcatUser = 'ec2-user'
-   def stopTomcat = "ssh ${tomcatUser}@${tomcatIp} /opt/tomcat8/bin/shutdown.sh"
-   def startTomcat = "ssh ${tomcatUser}@${tomcatIp} /opt/tomcat8/bin/startup.sh"
-   def copyWar = "scp -o StrictHostKeyChecking=no target/myweb.war ${tomcatUser}@${tomcatIp}:/opt/tomcat8/webapps/"
+   def tomcatIp = '192.168.1.13'
+   def tomcatUser = 'root'
+   def stopTomcat = "ssh ${tomcatUser}@${tomcatIp} /usr/bin/tomcatdown"
+   def startTomcat = "ssh ${tomcatUser}@${tomcatIp} /usr/bin/tomcatup"
+   def copyWar = "scp -o StrictHostKeyChecking=no target/myweb.war ${tomcatUser}@${tomcatIp}:/opt/apache-tomcat-9.0.17/webapps/"
    stage('SCM Checkout'){
         git branch: 'master', 
-	        credentialsId: 'javahometech',
-	        url: 'https://github.com/javahometech/myweb'
+	        credentialsId: 'francis0516',
+	        url: 'https://github.com/francis0516/myweb'
    }
    stage('Maven Build'){
         def mvnHome = tool name: 'maven3', type: 'maven'
